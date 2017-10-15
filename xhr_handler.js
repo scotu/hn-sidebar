@@ -13,4 +13,9 @@ chrome.extension.onConnect.addListener(function(port){
   port.onMessage.addListener(function(request) {
     xhrCall(request.url, port, request.id);
   });
+
+  chrome.browserAction.onClicked.addListener(function (tab) {
+    port.postMessage({type: "activate"});
+  });
 });
+

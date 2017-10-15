@@ -8,8 +8,12 @@ $(document).ready(function() {
     callbacks = [];
   
   port.onMessage.addListener(function(msg) {
-    callbacks[msg.id](msg.text);
-    delete callbacks[msg.id];
+    if (msg.hasOwnProperty("type") && msg.type === "activate"){
+      searchHN();
+    } else {
+      callbacks[msg.id](msg.text);
+      delete callbacks[msg.id];
+    }
   });
 
   function doXHR(params, callback) {
@@ -25,7 +29,7 @@ $(document).ready(function() {
     var urls = [window.location.href],
       urlWithoutSlash = urls[0].replace(/\/$/, "");
     if (EXCLUDE.test(urls[0])) { return; }
-    
+
     // TODO: find a way to search algolia by URL.  Right now it is keyword searching only.
     // Therefore we need to filter the matches by URL.
 
@@ -34,7 +38,7 @@ $(document).ready(function() {
       // JSON.parse will not evaluate any malicious JavaScript embedded into JSON
       var data = JSON.parse(response),
         matches;
-      
+
       // We have to filter the matches by URL and sort by comment number
       matches = data.hits.filter(function(hit) {
         return hit.url && hit.url.replace(/\/$/, "") == urlWithoutSlash;
@@ -90,7 +94,7 @@ $(document).ready(function() {
 
     function fixIframeHeight() {
       HNembed.height($(window).height());
-      HNsite.height(HNembed.height()-20);  
+      HNsite.height(HNembed.height()-20);
     }
 
     function togglePanel() {
@@ -139,7 +143,6 @@ $(document).ready(function() {
       doc.close();
     });
   }
-  
-  searchHN();
-  
+
+
 });

@@ -8,8 +8,11 @@
    } ],
    "icons": { "48": "icon-48.png",
              "128": "icon-128.png" },
+   "browser_action": {
+      "default_icon": "icon-48.png"
+   },
    "description": "Hacker News integration for Chrome",
-   "name": "Hacker News Sidebar",
+   "name": "Hacker News Sidebar with Button",
    "permissions": [ "https://api.thriftdb.com/api.hnsearch.com/items/*", "https://news.ycombinator.com/*" ],
-   "version": "1.0.18"
+   "version": "1.2.0"
 }
