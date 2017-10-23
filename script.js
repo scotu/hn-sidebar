@@ -6,7 +6,18 @@ $(document).ready(function() {
   
   var port = chrome.extension.connect({}),
     callbacks = [];
-  
+
+  function createHNtab() {
+    var attr = document.createAttribute('id');
+    attr.value = "HNtab";
+    var tabEl = document.createElement("div");
+    tabEl.setAttributeNode(attr);
+
+    return tabEl;
+  }
+  var HNtab = createHNtab();
+  var $HNtab = $(HNtab);
+
   port.onMessage.addListener(function(msg) {
     if (msg.hasOwnProperty("type") && msg.type === "activate"){
       searchHN();
@@ -19,6 +30,16 @@ $(document).ready(function() {
   function doXHR(params, callback) {
     params.id = callbacks.push(callback) - 1;
     port.postMessage(params);
+  }
+
+  function showLoading() {
+    HNtab.className = "HNloading";
+    HNtab.innerHTML = "<div class=\"HNloader\">Loading</div>";
+  }
+
+  function hideLoading() {
+    HNtab.className = "";
+    HNtab.innerHTML = "Hacker News";
   }
 
   function searchHN() {
@@ -34,6 +55,8 @@ $(document).ready(function() {
     // Therefore we need to filter the matches by URL.
 
     var queryURL = HNSEARCH_API_URL + HNSEARCH_PARAM + urls.map(encodeURIComponent).join('&' + HNSEARCH_PARAM);
+    document.body.appendChild(HNtab);
+    showLoading();
     doXHR({'action': 'get', 'url': queryURL}, function(response) {
       // JSON.parse will not evaluate any malicious JavaScript embedded into JSON
       var data = JSON.parse(response),
@@ -57,6 +80,7 @@ $(document).ready(function() {
       // If there is a result, create the orange tab and panel
       var foundItem = matches[0];
       createPanel(HN_BASE + 'item?id=' + foundItem.objectID, foundItem.title);
+      hideLoading();
     });
   }
 
@@ -85,7 +109,6 @@ $(document).ready(function() {
 
     var HNembed = $("<div />").attr({'id' : 'HNembed'});
     var HNsite = $("<iframe />").attr({'id' : 'HNsite', 'src' : 'about: blank'});
-    var HNtab = $("<div>Hacker News</div>").attr({'id' : 'HNtab'});
 
     var HNtitle = $('<span id="HNtitleNormal">' + tabTitle + '</span><span id="HNtitleHover">Hide</span>');
     var HNheader = $("<div/>").attr({'id' : 'HNheader'});
@@ -98,7 +121,7 @@ $(document).ready(function() {
     }
 
     function togglePanel() {
-      var openPanel = HNtab.is(":visible");
+      var openPanel = $HNtab.is(":visible");
 
       var embedPosition = openPanel ? "0px" : "-700px";
       var tabPosition = openPanel ? "-25px" : "0px";
@@ -109,8 +132,8 @@ $(document).ready(function() {
 
       if (openPanel) {
         fixIframeHeight();
-        HNtab.animate({right: tabPosition}, tabAnimationTime, easing, function() {
-          HNtab.hide();
+        $HNtab.animate({right: tabPosition}, tabAnimationTime, easing, function() {
+          $HNtab.hide();
         });
     HNembed.show();
     HNembed.animate({right: embedPosition}, embedAnimationTime,easing);
@@ -118,13 +141,13 @@ $(document).ready(function() {
         HNembed.animate({right: embedPosition}, embedAnimationTime, easing, function() {
       HNembed.hide();
         });
-    HNtab.show();
-    HNtab.animate({right: tabPosition}, tabAnimationTime, easing);
+    $HNtab.show();
+    $HNtab.animate({right: tabPosition}, tabAnimationTime, easing);
       }
     }
 
     HNheader.click(togglePanel);
-    HNtab.click(togglePanel);
+    $HNtab.click(togglePanel);
 
     HNheader.append(HNtitle);
 
@@ -132,7 +155,6 @@ $(document).ready(function() {
     HNembed.append(HNsite);
     HNembed.hide();
 
-    $('body').append(HNtab);
     $('body').append(HNembed);
 
     doXHR({'action': 'get', 'url': HNurl}, function(response) {

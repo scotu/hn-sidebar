@@ -1,4 +1,4 @@
-#Hacker News Sidebar for Chrome
+# Hacker News Sidebar for Chrome
 
 *Displays the Hacker News comment thread that corresponds to the page you are currently viewing in a sidebar at the user request (by clicking on the extension icon in the browser UI), if it was submitted to Hacker News.*
 
@@ -16,7 +16,7 @@ This source is released under an [MIT license](http://en.wikipedia.org/wiki/MIT_
 
 ## Roadmap:
 
- * firefox WebExtensions compatibility
+ * feedback to the user when no result is found instead of spinning forever
  * cleanup current quick and dirty approach to avoid HN search on page load
- * show feedback to the user when a HN comment page is requested before loading completes, or when no result is found
+ * firefox WebExtensions compatibility
  * reactivate original auto-search behavior under a setting
