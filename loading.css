@@ -1,9 +1,11 @@
 #HNtab.HNloading {
   background-image: none;
 }
+
+/* MIT license https://projects.lukehaas.me/css-loaders/ */
 .HNloader {
   margin: 100px auto;
-  font-size: 3px;
+  font-size: 3px; /* custom for size */
   width: 1em;
   height: 1em;
   border-radius: 50%;
